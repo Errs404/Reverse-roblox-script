@@ -29,7 +29,7 @@ local function iq(ir)
 	end
 end
 local et = a.async(function()
-	if getgenv and getgenv()._ORCA_IS_LOADED ~= nil then
+	if getgenv and getgenv()._REVERSE_IS_LOADED ~= nil then
 		error("Reverse is already loaded!")
 	end
 	local ir = a.await(io())
@@ -40,7 +40,7 @@ local et = a.async(function()
 		end)
 	end
 	if getgenv then
-		getgenv()._ORCA_IS_LOADED = true
+		getgenv()._REVERSE_IS_LOADED = true
 	end
 end)
 et():catch(function(dw)

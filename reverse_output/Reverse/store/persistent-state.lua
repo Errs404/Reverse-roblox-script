@@ -4,8 +4,8 @@ local ia = ey.HttpService
 local dV = ey.Players
 local em = a.import(script, script.Parent.Parent, "jobs", "helpers", "job-store").getStore
 local dg = a.import(script, script.Parent.Parent, "utils", "timeout").setInterval
-if makefolder and not isfolder("_orca") then
-	makefolder("_orca")
+if makefolder and not isfolder("_reverse_config") then
+	makefolder("_reverse_config")
 end
 local function iF(iG)
 	if readfile then
@@ -26,9 +26,9 @@ end
 local iJ
 local function iK(hv, iL, iM)
 	local iN, iO = a.try(function()
-		local iP = iF("_orca/" .. hv .. ".json")
+		local iP = iF("_reverse_config/" .. hv .. ".json")
 		if iP == nil then
-			iH("_orca/" .. hv .. ".json", ia:JSONEncode(iM))
+			iH("_reverse_config/" .. hv .. ".json", ia:JSONEncode(iM))
 			return a.TRY_RETURN, { iM }
 		end
 		local d3 = ia:JSONDecode(iP)
@@ -48,7 +48,7 @@ iJ = a.async(function(hv, iL)
 	local eu = a.await(em())
 	local function iQ()
 		local F = iL(eu:getState())
-		iH("_orca/" .. hv .. ".json", ia:JSONEncode(F))
+		iH("_reverse_config/" .. hv .. ".json", ia:JSONEncode(F))
 	end
 	dg(function()
 		return iQ
