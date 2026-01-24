@@ -48,7 +48,7 @@ local function validateRequire(module, caller)
 		end
 	end
 
-	return function ()
+	return function()
 		if currentlyLoading[caller] == module then -- Thread-safe cleanup!
 			currentlyLoading[caller] = nil
 		end
@@ -97,7 +97,7 @@ local function newEnv(id)
 	return setmetatable({
 		VERSION = "1.1.1",
 		script = instanceFromId[id],
-		require = function (module)
+		require = function(module)
 			return requireModuleInternal(module, instanceFromId[id])
 		end,
 	}, {

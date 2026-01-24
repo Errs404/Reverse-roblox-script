@@ -1,0 +1,40 @@
+local a = require(script.Parent.Parent.Parent.include.RuntimeLib)
+local b = a.import(script, a.getModule(script, "@rbxts", "roact").src)
+local am = a.import(script, a.getModule(script, "@rbxts", "roact-rodux-hooked").out).Provider
+local B = a.import(script, script.Parent, "Acrylic").default
+local an = a.import(script, script.Parent.Parent.Parent, "store", "models", "dashboard.model").DashboardPage
+local ao = a.import(script, script.Parent.Parent.Parent, "store", "store").configureStore
+local ap = a.import(script, script.Parent.Parent.Parent, "utils", "color3").hex
+local aq = a.import(script, script.Parent.Parent.Parent, "utils", "udim2")
+local ar = aq.px
+local r = aq.scale
+return function(as)
+	local at = b.mount(
+		b.createElement(
+			am,
+			{ store = ao({ dashboard = { isOpen = true, page = an.Apps, hint = nil, apps = {} } }) },
+			{
+				b.createElement(
+					"Frame",
+					{
+						AnchorPoint = Vector2.new(0.5, 0.5),
+						Position = r(0.3, 0.7),
+						Size = ar(250, 350),
+						BackgroundColor3 = ap("#000000"),
+						BackgroundTransparency = 0.5,
+						BorderSizePixel = 0,
+					},
+					{ b.createElement("UICorner", { CornerRadius = UDim.new(0, 64) }), b.createElement(
+						B,
+						{ radius = 52 }
+					) }
+				),
+			}
+		),
+		as,
+		"Acrylic"
+	)
+	return function()
+		return b.unmount(at)
+	end
+end

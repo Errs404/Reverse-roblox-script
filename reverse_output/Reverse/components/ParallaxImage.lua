@@ -1,0 +1,35 @@
+local a = require(script.Parent.Parent.include.RuntimeLib)
+local b = a.import(script, a.getModule(script, "@rbxts", "roact").src)
+local ba = a.import(script, script.Parent.Parent, "utils", "binding-util").mapBinding
+local r = a.import(script, script.Parent.Parent, "utils", "udim2").scale
+local function cr(C)
+	local aX = C.image
+	local cs = C.imageSize
+	local ct = C.offset
+	local bX = C.padding
+	local be = C[b.Children]
+	local bf = { Image = aX }
+	local y = bX * 2
+	bf.ImageRectSize = cs - y
+	bf.ImageRectOffset = ba(ct, function(cu)
+		local c7 = cu * bX
+		return bX + c7
+	end)
+	bf.ScaleType = "Crop"
+	bf.Size = r(1, 1)
+	bf.BackgroundTransparency = 1
+	local G = {}
+	local H = #G
+	if be then
+		for J, K in pairs(be) do
+			if type(J) == "number" then
+				G[H + J] = K
+			else
+				G[J] = K
+			end
+		end
+	end
+	return b.createElement("ImageLabel", bf, G)
+end
+local f = cr
+return { default = f }

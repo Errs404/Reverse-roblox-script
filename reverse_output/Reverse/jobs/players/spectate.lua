@@ -1,0 +1,57 @@
+local a = require(script.Parent.Parent.Parent.include.RuntimeLib)
+local n = a.import(script, a.getModule(script, "@rbxts", "services")).Workspace
+local ht = a.import(script, script.Parent.Parent, "helpers", "get-selected-player").getSelectedPlayer
+local f6 = a.import(script, script.Parent.Parent, "helpers", "job-store")
+local em = f6.getStore
+local eA = f6.onJobChange
+local aS = a.import(script, script.Parent.Parent.Parent, "store", "actions", "jobs.action").setJobActive
+local et = a.async(function()
+	local eu = a.await(em())
+	local hu = a.await(ht(function()
+		eu:dispatch(aS("spectate", false))
+	end))
+	local i1 = false
+	local i2
+	local i3
+	local function i4(dR)
+		dR:GetPropertyChangedSignal("CameraSubject"):Connect(function()
+			if i2 ~= dR.CameraSubject and eu:getState().jobs.spectate.active then
+				i1 = false
+				eu:dispatch(aS("spectate", false))
+			end
+		end)
+	end
+	n:GetPropertyChangedSignal("CurrentCamera"):Connect(function()
+		i4(n.CurrentCamera)
+	end)
+	i4(n.CurrentCamera)
+	a.await(eA("spectate", function(eM)
+		local dR = n.CurrentCamera
+		if eM.active then
+			local i5 = hu.current
+			if i5 ~= nil then
+				i5 = i5.Character
+				if i5 ~= nil then
+					i5 = i5:FindFirstChildWhichIsA("Humanoid")
+				end
+			end
+			local i6 = i5
+			if not i6 then
+				eu:dispatch(aS("spectate", false))
+			else
+				i1 = true
+				i3 = dR.CameraSubject
+				i2 = i6
+				dR.CameraSubject = i6
+			end
+		elseif i1 then
+			i1 = false
+			dR.CameraSubject = i3
+			i3 = nil
+			i2 = nil
+		end
+	end))
+end)
+et():catch(function(dw)
+	warn("[spectate-worker] " .. tostring(dw))
+end)

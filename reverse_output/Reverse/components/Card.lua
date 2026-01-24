@@ -1,0 +1,82 @@
+local a = require(script.Parent.Parent.include.RuntimeLib)
+local b = a.import(script, a.getModule(script, "@rbxts", "roact").src)
+local i = a.import(script, a.getModule(script, "@rbxts", "roact-hooked").out).hooked
+local B = a.import(script, script.Parent, "Acrylic").default
+local bb = a.import(script, script.Parent, "Border").default
+local bl = a.import(script, script.Parent, "Canvas").default
+local bm = a.import(script, script.Parent, "Fill").default
+local bn = a.import(script, script.Parent, "Glow")
+local bo = bn.default
+local bp = bn.GlowRadius
+local b_ = a.import(script, script.Parent.Parent, "hooks", "common", "use-delayed-update").useDelayedUpdate
+local aO = a.import(script, script.Parent.Parent, "hooks", "common", "use-spring").useSpring
+local c0 = a.import(script, script.Parent.Parent, "hooks", "use-current-page").useIsPageOpen
+local ar = a.import(script, script.Parent.Parent, "utils", "udim2").px
+local function c1(C)
+	local c2 = C.index
+	local c3 = C.page
+	local aW = C.theme
+	local Q = C.size
+	local R = C.position
+	local be = C[b.Children]
+	local c4 = c0(c3)
+	local c5 = b_(c4, c2 * 40)
+	local c6 = UDim2.new(UDim.new(), R.Y)
+	local y = ar((Q.X.Offset + 48) * 2 - R.X.Offset, 0)
+	local c7 = ar(Q.X.Offset + 48 * 2, 0)
+	local c8 = c6 - y - c7
+	local bf =
+		{ anchor = Vector2.new(0, 1), size = Q, position = aO(c5 and R or c8, { frequency = 2, dampingRatio = 0.8 }) }
+	local G = {
+		b.createElement(
+			bo,
+			{
+				radius = bp.Size198,
+				size = UDim2.new(1, 100, 1, 96),
+				position = ar(-50, -28),
+				color = aW.dropshadow,
+				gradient = aW.dropshadowGradient,
+				transparency = aW.dropshadowTransparency,
+			}
+		),
+		b.createElement(
+			bm,
+			{ color = aW.background, gradient = aW.backgroundGradient, transparency = aW.transparency, radius = 16 }
+		),
+	}
+	local H = #G
+	if be then
+		for J, K in pairs(be) do
+			if type(J) == "number" then
+				G[H + J] = K
+			else
+				G[J] = K
+			end
+		end
+	end
+	H = #G
+	local I = aW.acrylic and b.createFragment({ acrylic = b.createElement(B) })
+	if I then
+		if I.elements ~= nil or I.props ~= nil and I.component ~= nil then
+			G[H + 1] = I
+		else
+			for J, K in ipairs(I) do
+				G[H + J] = K
+			end
+		end
+	end
+	H = #G
+	local c9 = aW.outlined and b.createElement(bb, { color = aW.foreground, radius = 16, transparency = 0.8 })
+	if c9 then
+		if c9.elements ~= nil or c9.props ~= nil and c9.component ~= nil then
+			G[H + 1] = c9
+		else
+			for J, K in ipairs(c9) do
+				G[H + J] = K
+			end
+		end
+	end
+	return b.createElement(bl, bf, G)
+end
+local f = i(c1)
+return { default = f }

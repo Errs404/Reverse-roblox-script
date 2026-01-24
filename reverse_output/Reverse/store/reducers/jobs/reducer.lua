@@ -1,0 +1,48 @@
+local a = require(script.Parent.Parent.Parent.include.RuntimeLib)
+local it = a.import(script, a.getModule(script, "@rbxts", "rodux").src)
+local dB = {
+	flight = { value = 60, active = false },
+	walkSpeed = { value = 80, active = false },
+	jumpHeight = { value = 200, active = false },
+	refresh = { active = false },
+	ghost = { active = false },
+	godmode = { active = false },
+	freecam = { active = false },
+	teleport = { active = false },
+	hide = { active = false },
+	kill = { active = false },
+	spectate = { active = false },
+	rejoinServer = { active = false },
+	switchServer = { active = false },
+}
+local iS = it.createReducer(dB, {
+	["jobs/setJobActive"] = function(F, aU)
+		local ax = {}
+		for J, K in pairs(F) do
+			ax[J] = K
+		end
+		local ay = aU.jobName
+		local az = {}
+		for J, K in pairs(F[aU.jobName]) do
+			az[J] = K
+		end
+		az.active = aU.active
+		ax[ay] = az
+		return ax
+	end,
+	["jobs/setJobValue"] = function(F, aU)
+		local ax = {}
+		for J, K in pairs(F) do
+			ax[J] = K
+		end
+		local ay = aU.jobName
+		local az = {}
+		for J, K in pairs(F[aU.jobName]) do
+			az[J] = K
+		end
+		az.value = aU.value
+		ax[ay] = az
+		return ax
+	end,
+})
+return { jobsReducer = iS }

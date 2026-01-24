@@ -1,0 +1,4 @@
+local n3 = 880
+local n7 = 1824
+local n2 = 48
+return { BASE_WINDOW_HEIGHT = n3, BASE_WINDOW_WIDTH = n7, BASE_PADDING = n2 }

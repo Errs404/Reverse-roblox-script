@@ -1,0 +1,75 @@
+local a = require(script.Parent.Parent.Parent.Parent.Parent.include.RuntimeLib)
+local b = a.import(script, a.getModule(script, "@rbxts", "roact").src)
+local h = a.import(script, a.getModule(script, "@rbxts", "roact-hooked").out)
+local l5 = h.pure
+local l = h.useMemo
+local bb = a.import(script, script.Parent.Parent.Parent.Parent.Parent, "components", "Border").default
+local b_ =
+	a.import(script, script.Parent.Parent.Parent.Parent.Parent, "hooks", "common", "use-delayed-update").useDelayedUpdate
+local aO = a.import(script, script.Parent.Parent.Parent.Parent.Parent, "hooks", "common", "use-spring").useSpring
+local c0 = a.import(script, script.Parent.Parent.Parent.Parent.Parent, "hooks", "use-current-page").useIsPageOpen
+local ei = a.import(script, script.Parent.Parent.Parent.Parent.Parent, "hooks", "use-theme").useTheme
+local an =
+	a.import(script, script.Parent.Parent.Parent.Parent.Parent, "store", "models", "dashboard.model").DashboardPage
+local jN = a.import(script, script.Parent.Parent.Parent.Parent.Parent, "utils", "array-util").arrayToMap
+local ar = a.import(script, script.Parent.Parent.Parent.Parent.Parent, "utils", "udim2").px
+local lL = a.import(script, script.Parent, "FriendItem").default
+local lB = 48
+local function lA(C)
+	local e6 = C.gameActivity
+	local c2 = C.index
+	local aW = ei("home").friendActivity
+	local c4 = c0(an.Home)
+	local lt = b_(c4, c4 and 330 + c2 * 100 or 300)
+	local lN = l(function()
+		return #e6.friends * (48 + 10) + 96
+	end, { #e6.friends })
+	local bf = {
+		Image = e6.thumbnail,
+		ScaleType = "Crop",
+		Size = ar(278, 156),
+		Position = aO(lt and ar(24, c2 * (lB + 156)) or ar(-278, c2 * (lB + 156)), {}),
+		BackgroundTransparency = 1,
+	}
+	local G = {
+		b.createElement(bb, { color = aW.foreground, radius = 8, transparency = 0.8 }),
+		b.createElement("UICorner", { CornerRadius = UDim.new(0, 8) }),
+	}
+	local H = #G
+	local bh = {
+		Size = UDim2.new(1, 0, 0, 64),
+		Position = UDim2.new(0, 0, 1, -24),
+		CanvasSize = ar(lN, 0),
+		ScrollingDirection = "X",
+		ScrollBarThickness = 0,
+		ScrollBarImageTransparency = 1,
+		BackgroundTransparency = 1,
+		BorderSizePixel = 0,
+		ClipsDescendants = false,
+	}
+	local bi = {
+		b.createElement(
+			"UIListLayout",
+			{
+				SortOrder = "LayoutOrder",
+				FillDirection = "Horizontal",
+				HorizontalAlignment = "Left",
+				VerticalAlignment = "Top",
+				Padding = UDim.new(0, 10),
+			}
+		),
+		b.createElement("UIPadding", { PaddingLeft = UDim.new(0, 10) }),
+	}
+	local bj = #bi
+	for J, K in
+		pairs(jN(e6.friends, function(e0, c2)
+			return { tostring(e0.VisitorId), b.createElement(lL, { friend = e0, index = c2 }) }
+		end))
+	do
+		bi[J] = K
+	end
+	G[H + 1] = b.createElement("ScrollingFrame", bh, bi)
+	return b.createElement("ImageLabel", bf, G)
+end
+local f = l5(lA)
+return { GAME_PADDING = lB, default = f }

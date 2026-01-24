@@ -1,0 +1,12 @@
+local a = require(script.Parent.include.RuntimeLib)
+local eh = a.import(script, script, "dark-theme").darkTheme
+local iV = a.import(script, script, "frosted-glass").frostedGlass
+local iW = a.import(script, script, "high-contrast").highContrast
+local iX = a.import(script, script, "light-theme").lightTheme
+local iY = a.import(script, script, "obsidian").obsidian
+local iZ = a.import(script, script, "sorbet").sorbet
+local i_ = { iZ, eh, iX, iV, iY, iW }
+local function eg()
+	return i_
+end
+return { getThemes = eg }

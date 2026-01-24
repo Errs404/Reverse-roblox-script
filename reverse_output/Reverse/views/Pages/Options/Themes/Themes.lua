@@ -1,0 +1,67 @@
+local a = require(script.Parent.Parent.Parent.Parent.Parent.include.RuntimeLib)
+local b = a.import(script, a.getModule(script, "@rbxts", "roact").src)
+local h = a.import(script, a.getModule(script, "@rbxts", "roact-hooked").out)
+local i = h.hooked
+local l = h.useMemo
+local bl = a.import(script, script.Parent.Parent.Parent.Parent.Parent, "components", "Canvas").default
+local c1 = a.import(script, script.Parent.Parent.Parent.Parent.Parent, "components", "Card").default
+local ei = a.import(script, script.Parent.Parent.Parent.Parent.Parent, "hooks", "use-theme").useTheme
+local an =
+	a.import(script, script.Parent.Parent.Parent.Parent.Parent, "store", "models", "dashboard.model").DashboardPage
+local eg = a.import(script, script.Parent.Parent.Parent.Parent.Parent, "themes").getThemes
+local jN = a.import(script, script.Parent.Parent.Parent.Parent.Parent, "utils", "array-util").arrayToMap
+local aq = a.import(script, script.Parent.Parent.Parent.Parent.Parent, "utils", "udim2")
+local ar = aq.px
+local r = aq.scale
+local mF = a.import(script, script.Parent, "ThemeItem")
+local mD = mF.default
+local lc = mF.ENTRY_HEIGHT
+local lb = mF.PADDING
+local function mr()
+	local aW = ei("options").themes
+	local i_ = l(eg, {})
+	local bf = { index = 2, page = an.Options, theme = aW, size = ar(326, 416), position = UDim2.new(0, 374, 1, 0) }
+	local G = {
+		b.createElement(
+			"TextLabel",
+			{
+				Text = "Themes",
+				Font = "GothamBlack",
+				TextSize = 20,
+				TextColor3 = aW.foreground,
+				TextXAlignment = "Left",
+				TextYAlignment = "Top",
+				Position = ar(24, 24),
+				BackgroundTransparency = 1,
+			}
+		),
+	}
+	local H = #G
+	local bh =
+		{ size = ar(326, 348), position = ar(0, 68), padding = { left = 24, right = 24, top = 8 }, clipsDescendants = true }
+	local bi = {}
+	local bj = #bi
+	local lH = {
+		Size = r(1, 1),
+		CanvasSize = ar(0, #i_ * (lc + lb) + lb),
+		BackgroundTransparency = 1,
+		BorderSizePixel = 0,
+		ScrollBarImageTransparency = 1,
+		ScrollBarThickness = 0,
+		ClipsDescendants = false,
+	}
+	local lI = {}
+	local lJ = #lI
+	for J, K in
+		pairs(jN(i_, function(aW, c2)
+			return { aW.name, b.createElement(mD, { theme = aW, index = c2 }) }
+		end))
+	do
+		lI[J] = K
+	end
+	bi[bj + 1] = b.createElement("ScrollingFrame", lH, lI)
+	G[H + 1] = b.createElement(bl, bh, bi)
+	return b.createElement(c1, bf, G)
+end
+local f = i(mr)
+return { default = f }

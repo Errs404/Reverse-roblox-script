@@ -1,0 +1,21 @@
+local a = require(script.Parent.Parent.Parent.Parent.include.RuntimeLib)
+local cy = a.import(script, a.getModule(script, "@rbxts", "flipper").src).isMotor
+local cz = a.import(script, a.getModule(script, "@rbxts", "roact").src).createBinding
+local cA = setmetatable({}, {
+	__tostring = function()
+		return "AssignedBinding"
+	end,
+})
+local function bz(cB)
+	assert(cB, "Missing argument #1: motor")
+	local y = cy(cB)
+	assert(y, "Provided value is not a motor")
+	if cB[cA] ~= nil then
+		return cB[cA]
+	end
+	local cC, cD = cz(cB:getValue())
+	cB:onStep(cD)
+	cB[cA] = cC
+	return cC
+end
+return { getBinding = bz }

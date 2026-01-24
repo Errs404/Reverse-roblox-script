@@ -1,1 +1,0 @@
-local a=require(script.Parent.Parent.include.RuntimeLib)local fO=a.import(script,script.Parent,"helpers","freecam")local fP=fO.DisableFreecam;local fQ=fO.EnableFreecam;local eA=a.import(script,script.Parent,"helpers","job-store").onJobChange;local et=a.async(function()a.await(eA("freecam",function(eM)if eM.active then fQ()else fP()end end))

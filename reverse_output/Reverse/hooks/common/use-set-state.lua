@@ -1,0 +1,31 @@
+local a = require(script.Parent.Parent.Parent.include.RuntimeLib)
+local aK = a.import(script, a.getModule(script, "@rbxts", "roact-hooked").out).useState
+local function dA(dB)
+	local Z = aK(dB)
+	local F = Z[1]
+	local de = Z[2]
+	local dC = function(aU)
+		return de(function(bg)
+			local ax = {}
+			if type(bg) == "table" then
+				for J, K in pairs(bg) do
+					ax[J] = K
+				end
+			end
+			local b3
+			if type(aU) == "function" then
+				b3 = aU(bg)
+			else
+				b3 = aU
+			end
+			if type(b3) == "table" then
+				for J, K in pairs(b3) do
+					ax[J] = K
+				end
+			end
+			return ax
+		end)
+	end
+	return { F, dC }
+end
+return { default = dA }
