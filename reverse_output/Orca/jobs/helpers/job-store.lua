@@ -1,0 +1,1 @@
+local a=require(script.Parent.Parent.Parent.include.RuntimeLib)local dg=a.import(script,script.Parent.Parent.Parent,"utils","timeout").setInterval;local eu={}local function hw(hx)if eu.current then error("Store has already been set")end;eu.current=hx

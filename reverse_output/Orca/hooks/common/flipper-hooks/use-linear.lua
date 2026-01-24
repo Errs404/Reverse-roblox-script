@@ -1,0 +1,1 @@
+local a=require(script.Parent.Parent.Parent.Parent.include.RuntimeLib)local cJ=a.import(script,a.getModule(script,"@rbxts","flipper").src).Linear;local cE=a.import(script,script.Parent,"use-goal").useGoal;local function cK(cI,cL)return cE(cJ.new(cI,cL))end;return{useLinear=cK}

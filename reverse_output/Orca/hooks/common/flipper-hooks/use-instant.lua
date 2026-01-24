@@ -1,0 +1,1 @@
+local a=require(script.Parent.Parent.Parent.Parent.include.RuntimeLib)local cG=a.import(script,a.getModule(script,"@rbxts","flipper").src).Instant;local cE=a.import(script,script.Parent,"use-goal").useGoal;local function cH(cI)return cE(cG.new(cI))end;return{useInstant=cH}

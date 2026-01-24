@@ -1,0 +1,1 @@
+local function ar(bU,ed)return UDim2.new(0,bU,0,ed)end;local function r(bU,ed)return UDim2.new(bU,0,ed,0)end;local function ce(Q,dI,ck)if ck==nil then ck=1 end;return Vector2.new(dI.X.Offset+dI.X.Scale/ck*Q.X,dI.Y.Offset+dI.Y.Scale/ck*Q.Y)

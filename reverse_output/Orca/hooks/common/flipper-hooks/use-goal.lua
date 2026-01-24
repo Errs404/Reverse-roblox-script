@@ -1,0 +1,1 @@
+local a=require(script.Parent.Parent.Parent.Parent.include.RuntimeLib)local bz=a.import(script,script.Parent,"get-binding").getBinding;local bA=a.import(script,script.Parent,"use-motor").useMotor;local function cE(cF)local cB=bA(cF._targetValue)cB:setGoal(cF)return bz(cB)end;return{useGoal=cE}
