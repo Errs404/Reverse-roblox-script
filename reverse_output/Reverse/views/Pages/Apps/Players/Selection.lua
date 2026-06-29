@@ -70,6 +70,11 @@ local function l9()
 	local hu = p(function(F)
 		return F.dashboard.apps.playerSelected
 	end)
+	-- Search state
+	local Z = aK("")
+	local bP = Z[1]
+	local bQ = Z[2]
+
 	local lm = l(function()
 		local y = function(kS)
 			return kS.Name == hu
@@ -93,6 +98,19 @@ local function l9()
 				e1[H] = K
 			end
 		end
+		-- Apply search filter
+		local bS = bP:lower()
+		if #bS > 0 then
+			local e2 = {}
+			local I = 0
+			for J, K in ipairs(e1) do
+				if K.Name:lower():find(bS, 1, true) or K.DisplayName:lower():find(bS, 1, true) then
+					I = I + 1
+					e2[I] = K
+				end
+			end
+			e1 = e2
+		end
 		local lo = function(hD, dG)
 			return string.lower(hD.Name) < string.lower(dG.Name)
 		end
@@ -100,15 +118,19 @@ local function l9()
 		local lp = e1
 		local b4
 		if ln then
-			local dk = { ln }
-			local bj = #dk
-			table.move(lp, 1, #lp, bj + 1, dk)
-			b4 = dk
+			if #bS == 0 or ln.Name:lower():find(bS, 1, true) or ln.DisplayName:lower():find(bS, 1, true) then
+				local dk = { ln }
+				local bj = #dk
+				table.move(lp, 1, #lp, bj + 1, dk)
+				b4 = dk
+			else
+				b4 = lp
+			end
 		else
 			b4 = lp
 		end
 		return b4
-	end, { lh, hu })
+	end, { lh, hu, bP })
 	k(function()
 		local b5 = hu ~= nil
 		if b5 then
@@ -132,8 +154,37 @@ local function l9()
 		{ size = ar(326, 280), position = ar(0, 368), padding = { left = 24, right = 24, top = 8 }, clipsDescendants = true }
 	local G = {}
 	local H = #G
+	-- Search bar
+	local aW = ei("apps").players
+	local bU = ar(278, 32)
+	local bV = aW.foreground or Color3.fromRGB(200, 200, 200)
+	G[H + 1] = b.createElement("TextBox", {
+		PlaceholderText = "Search players...",
+		Text = bP,
+		Font = "GothamBold",
+		TextSize = 14,
+		TextColor3 = bV,
+		PlaceholderColor3 = Color3.fromRGB(140, 140, 140),
+		BackgroundTransparency = 1,
+		Size = bU,
+		Position = ar(0, 0),
+		ClearTextOnFocus = false,
+		[b.Change.Text] = function(ai)
+			bQ(ai.Text)
+		end,
+	})
+	H = #G
+	G[H + 1] = b.createElement("Frame", {
+		Size = ar(278, 1),
+		Position = ar(0, 36),
+		BackgroundColor3 = bV,
+		BackgroundTransparency = 0.7,
+		BorderSizePixel = 0,
+	})
+	H = #G
 	local bh = {
-		Size = r(1, 1),
+		Size = ar(278, 232),
+		Position = ar(0, 40),
 		CanvasSize = ar(0, #lm * (lc + lb) + lb),
 		BackgroundTransparency = 1,
 		BorderSizePixel = 0,
