@@ -156,22 +156,33 @@ local function l9()
 	local H = #G
 	-- Search bar
 	local aW = ei("apps").players
-	local bU = ar(278, 32)
 	local bV = aW.foreground or Color3.fromRGB(200, 200, 200)
-	G[H + 1] = b.createElement("TextBox", {
-		PlaceholderText = "Search players...",
-		Text = bP,
-		Font = "GothamBold",
-		TextSize = 14,
-		TextColor3 = bV,
-		PlaceholderColor3 = Color3.fromRGB(140, 140, 140),
-		BackgroundTransparency = 1,
-		Size = bU,
+	G[H + 1] = b.createElement("Frame", {
+		Size = ar(278, 32),
 		Position = ar(0, 0),
-		ClearTextOnFocus = false,
-		[b.Change.Text] = function(ai)
-			bQ(ai.Text)
-		end,
+		BackgroundTransparency = 1,
+		BorderSizePixel = 0,
+	}, {
+		b.createElement(bm, {
+			color = aW.background or Color3.fromRGB(25, 25, 25),
+			transparency = aW.backgroundTransparency or 0.4,
+			radius = 6,
+		}),
+		b.createElement("TextBox", {
+			PlaceholderText = "Search players...",
+			Text = bP,
+			Font = "GothamBold",
+			TextSize = 14,
+			TextColor3 = bV,
+			PlaceholderColor3 = Color3.fromRGB(140, 140, 140),
+			BackgroundTransparency = 1,
+			Size = r(1, 1),
+			Position = r(0, 0),
+			ClearTextOnFocus = false,
+			[b.Change.Text] = function(ai)
+				bQ(ai.Text)
+			end,
+		}),
 	})
 	H = #G
 	G[H + 1] = b.createElement("Frame", {
