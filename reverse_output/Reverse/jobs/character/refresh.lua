@@ -26,33 +26,56 @@ local et = a.async(function()
 	end))
 end)
 fJ = a.async(function()
-	local eT = eB.Character
-	if not eT then
+	local char = eB.Character
+	if not char then
 		error("Character is null")
 	end
-	local fK = eT:FindFirstChild("HumanoidRootPart")
-	if fK ~= nil then
-		fK = fK.CFrame
+
+	-- Save current position BEFORE killing
+	local hrp = char:FindFirstChild("HumanoidRootPart")
+	local savedCF = hrp and hrp.CFrame or nil
+
+	-- Kill character: find Humanoid as CHILD (not ancestor!)
+	local hum = char:FindFirstChildWhichIsA("Humanoid")
+	if hum then
+		hum:ChangeState(Enum.HumanoidStateType.Dead)
+		task.wait(0.1)
 	end
-	local fL = fK
-	local fl = eT:FindFirstAncestorWhichIsA("Humanoid")
-	local b3 = fl
-	if b3 ~= nil then
-		b3:ChangeState(Enum.HumanoidStateType.Dead)
-	end
-	eT:ClearAllChildren()
-	local fM = Instance.new("Model", n)
-	eB.Character = fM
-	eB.Character = eT
-	fM:Destroy()
-	if not fL then
+
+	-- Clear all children to force complete respawn
+	char:ClearAllChildren()
+
+	-- Force respawn by swapping Character reference
+	-- This triggers CharacterAdded even in FilteringEnabled games
+	local tempModel = Instance.new("Model")
+	eB.Character = tempModel
+	task.wait()
+	eB.Character = char
+	tempModel:Destroy()
+
+	if not savedCF then
 		return nil
 	end
-	local fN = a.await(a.Promise.fromEvent(eB.CharacterAdded):timeout(fI, "CharacterAdded event timed out"))
-	local eF = fN:WaitForChild("HumanoidRootPart", 5)
-	if eF and (eF:IsA("BasePart") and fL) then
+
+	-- Wait for new character to spawn
+	local newChar = a.await(a.Promise.fromEvent(eB.CharacterAdded)
+		:timeout(fI, "CharacterAdded event timed out"))
+
+	-- Find HRP on new character
+	local newHRP = newChar:WaitForChild("HumanoidRootPart", 5)
+	if newHRP and newHRP:IsA("BasePart") then
+		-- Set CFrame after a short delay (gives engine time to settle)
 		task.delay(0.1, function()
-			eF.CFrame = fL
+			pcall(function()
+				newHRP.CFrame = savedCF
+				-- Also teleport all other body parts to same position
+				-- (some games check part alignment)
+				for _, part in ipairs(newChar:GetDescendants()) do
+					if part:IsA("BasePart") and part ~= newHRP then
+						part.CFrame = savedCF
+					end
+				end
+			end)
 		end)
 	end
 end)
