@@ -1,16 +1,17 @@
 
--- Prevent "attempt to call nil value" on debug.traceback
--- Xeno and some executors block debug.* functions
+-- Prevent "attempt to call nil value" on debug.traceback/setfenv
+-- Xeno and some executors block these functions
 if not debug then debug = {} end
 if not debug.traceback then
 	debug.traceback = function(msg, level)
-		if msg ~= nil then
-			return tostring(msg)
-		end
+		if msg ~= nil then return tostring(msg) end
 		return ""
 	end
 end
 if not debug.info then debug.info = function() end end
+-- Some executors block setfenv — fallback: just return the function as-is
+if not setfenv then setfenv = function(fn, _) return fn end end
+if not getfenv then getfenv = function() return _G end end
 
 -- Runtime module
 
@@ -118,14 +119,25 @@ end
 ---@param id string
 ---@return table<string, any> environment
 local function newEnv(id)
-	return setmetatable({
+	local global = getfenv(0)
+	-- Inject debug directly into every module's environment
+	-- This is more reliable than relying on __index for executors that block debug.*
+	local env = {
 		VERSION = "1.1.1",
 		script = instanceFromId[id],
 		require = function (module)
 			return requireModuleInternal(module, instanceFromId[id])
 		end,
-	}, {
-		__index = getfenv(0),
+		debug = global.debug or {},
+	}
+	if not env.debug.traceback then
+		env.debug.traceback = function(msg, level)
+			if msg ~= nil then return tostring(msg) end
+			return ""
+		end
+	end
+	return setmetatable(env, {
+		__index = global,
 		__metatable = "This metatable is locked",
 	})
 end
