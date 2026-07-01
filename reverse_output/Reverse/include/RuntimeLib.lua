@@ -10,6 +10,10 @@ if not debug.traceback then
 		return ""
 	end
 end
+if not debug.info then debug.info = function() end end
+-- Some executors block setfenv/getfenv
+if not setfenv then setfenv = function(fn, _) return fn end end
+if not getfenv then getfenv = function() return _G end end
 
 local a = {}
 a.Promise = nA
