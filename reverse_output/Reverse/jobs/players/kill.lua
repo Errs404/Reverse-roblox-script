@@ -9,25 +9,39 @@ local eA = f6.onJobChange
 local aS = a.import(script, script.Parent.Parent.Parent, "store", "actions", "jobs.action").setJobActive
 local eB = dV.LocalPlayer
 
--- Void-kill: teleport victim HRP below kill plane + zero health
--- No tool dependency, no character refresh, no self-kill
+-- Nuclear kill: BreakJoints + ChangeState + void teleport + ClearAllChildren
+-- Covers R6, R15, custom rigs, force fields, and anti-kill protections
 local hK = a.async(function(hL)
-	local void = CFrame.new(1000000, n.FallenPartsDestroyHeight - 500, 1000000)
-	for _ = 1, 200 do
-		local hO = hL.Character
-		if not hO then
-			break
-		end
-		local hR = hO:FindFirstChild("HumanoidRootPart")
-		if hR then
-			hR.CFrame = void
-		end
-		local hP = hO:FindFirstChildWhichIsA("Humanoid")
-		if hP then
-			hP.Health = 0
-		end
-		task.wait(0.1)
+	local char = hL.Character
+	if not char then return end
+
+	-- Method 1: BreakJoints — destroys all welds/joints, kills R6/R15 instantly
+	pcall(function() char:BreakJoints() end)
+
+	-- Method 2: Humanoid nuke — zero health + force death state
+	local hum = char:FindFirstChildWhichIsA("Humanoid")
+	if hum then
+		pcall(function() hum.Health = 0 end)
+		pcall(function() hum:ChangeState(Enum.HumanoidStateType.Dead) end)
 	end
+
+	-- Method 3: Void teleport — send HRP below kill plane
+	local hrp = char:FindFirstChild("HumanoidRootPart")
+	if hrp then
+		pcall(function() hrp.CFrame = CFrame.new(1e6, -5000, 1e6) end)
+	end
+
+	-- Method 4: Clean sweep — destroy all parts after delay
+	-- Catches games with custom rigs, respawn protection, etc.
+	task.delay(0.5, function()
+		if char and char.Parent then
+			for _, v in ipairs(char:GetChildren()) do
+				if v:IsA("BasePart") or v:IsA("MeshPart") or v:IsA("Model") or v:IsA("Accessory") or v:IsA("Tool") then
+					pcall(function() v:Destroy() end)
+				end
+			end
+		end
+	end)
 end)
 
 local et = a.async(function()
