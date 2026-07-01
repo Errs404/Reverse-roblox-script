@@ -9,39 +9,96 @@ local eA = f6.onJobChange
 local aS = a.import(script, script.Parent.Parent.Parent, "store", "actions", "jobs.action").setJobActive
 local eB = dV.LocalPlayer
 
--- Nuclear kill: BreakJoints + ChangeState + void teleport + ClearAllChildren
--- Covers R6, R15, custom rigs, force fields, and anti-kill protections
-local hK = a.async(function(hL)
-	local char = hL.Character
+-- ABSOLUTE KILL: multi-layer nuke covering R6, R15, Motor6D, custom rigs,
+-- server-authoritative characters, and remote-based damage systems.
+-- Loops continuously to catch respawns and anti-kill scripts.
+local function nukeCharacter(char)
 	if not char then return end
 
-	-- Method 1: BreakJoints — destroys all welds/joints, kills R6/R15 instantly
-	pcall(function() char:BreakJoints() end)
+	-- Layer 1: Destroy ALL joint types (covers R6 + R15 + custom welds)
+	pcall(char.BreakJoints, char)
+	for _, joint in ipairs(char:GetDescendants()) do
+		local className = joint.ClassName
+		if className == "Motor6D" or className == "Weld" or className == "Snap"
+			or className == "Glue" or className == "WeldConstraint" or className == "JointInstance" then
+			pcall(joint.Destroy, joint)
+		end
+	end
 
-	-- Method 2: Humanoid nuke — zero health + force death state
+	-- Layer 2: Humanoid annihilation
 	local hum = char:FindFirstChildWhichIsA("Humanoid")
 	if hum then
-		pcall(function() hum.Health = 0 end)
+		pcall(function() hum.Health = -1e9 end)
+		pcall(function() hum.MaxHealth = 0 end)
 		pcall(function() hum:ChangeState(Enum.HumanoidStateType.Dead) end)
+		pcall(function() hum:ChangeState(Enum.HumanoidStateType.Physics) end)
+		pcall(function() hum.Parent = nil end)  -- detach from character
+		pcall(function() hum:Destroy() end)
 	end
 
-	-- Method 3: Void teleport — send HRP below kill plane
+	-- Layer 3: Void teleport ALL body parts
 	local hrp = char:FindFirstChild("HumanoidRootPart")
 	if hrp then
-		pcall(function() hrp.CFrame = CFrame.new(1e6, -5000, 1e6) end)
+		pcall(function()
+			hrp.Anchored = false
+			hrp.CFrame = CFrame.new(9e9, -9e9, 9e9)
+			hrp.Velocity = Vector3.new(0, -1e5, 0)
+		end)
+	end
+	for _, part in ipairs(char:GetDescendants()) do
+		if part:IsA("BasePart") then
+			pcall(function()
+				part.Anchored = false
+				part.CanCollide = false
+				part.CFrame = CFrame.new(9e9, -9e9, 9e9)
+				part.Velocity = Vector3.new(0, -1e5, 0)
+			end)
+		end
 	end
 
-	-- Method 4: Clean sweep — destroy all parts after delay
-	-- Catches games with custom rigs, respawn protection, etc.
-	task.delay(0.5, function()
-		if char and char.Parent then
-			for _, v in ipairs(char:GetChildren()) do
-				if v:IsA("BasePart") or v:IsA("MeshPart") or v:IsA("Model") or v:IsA("Accessory") or v:IsA("Tool") then
-					pcall(function() v:Destroy() end)
-				end
+	-- Layer 4: Fire damage-related remotes (game-specific)
+	-- Searches workspace + Players for RemoteEvents/RemoteFunctions
+	-- that look like they handle damage/hit/kill
+	for _, remote in ipairs(game:GetDescendants()) do
+		if (remote:IsA("RemoteEvent") or remote:IsA("RemoteFunction")) and remote.Name then
+			local rn = remote.Name:lower()
+			if rn:find("damage") or rn:find("hit") or rn:find("take") or rn:find("kill")
+				or rn:find("attack") or rn:find("bullet") or rn:find("melee") or rn:find("sword")
+				or rn:find("punch") or rn:find("hurt") or rn:find("removehealth") then
+				local args = { remote:IsA("RemoteEvent") and "FireServer" or "InvokeServer" }
+				pcall(function()
+					if remote:IsA("RemoteEvent") then
+						remote:FireServer(unpack(args))
+					else
+						remote:InvokeServer(unpack(args))
+					end
+				end)
+				-- try with character/humanoid as arg
+				pcall(function()
+					if remote:IsA("RemoteEvent") then
+						remote:FireServer(hum or char, 9e9)
+						remote:FireServer(char, hum or char, 9e9)
+					end
+				end)
 			end
 		end
-	end)
+	end
+
+	-- Layer 5: Destroy all children (complete character wipe)
+	for _, child in ipairs(char:GetChildren()) do
+		pcall(child.Destroy, child)
+	end
+end
+
+local hK = a.async(function(hL)
+	-- Loop kill 10x over 3s to catch respawns + anti-kill resets
+	for i = 1, 10 do
+		local char = hL.Character
+		if char then
+			nukeCharacter(char)
+		end
+		task.wait(0.3)
+	end
 end)
 
 local et = a.async(function()
