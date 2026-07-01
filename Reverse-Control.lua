@@ -1,4 +1,17 @@
 
+-- Prevent "attempt to call nil value" on debug.traceback
+-- Xeno and some executors block debug.* functions
+if not debug then debug = {} end
+if not debug.traceback then
+	debug.traceback = function(msg, level)
+		if msg ~= nil then
+			return tostring(msg)
+		end
+		return ""
+	end
+end
+if not debug.info then debug.info = function() end end
+
 -- Runtime module
 
 ---@class Module

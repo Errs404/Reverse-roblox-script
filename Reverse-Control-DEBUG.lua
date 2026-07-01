@@ -3,6 +3,16 @@
   DEBUG OVERLAY — injected by build-debug.js
   Creates on-screen visual console inside the Roblox game window.
 ]]
+
+-- Prevent "attempt to call nil value" on debug.traceback (Xeno blocks debug.*)
+if not debug then debug = {} end
+if not debug.traceback then
+	debug.traceback = function(msg, level)
+		if msg ~= nil then return tostring(msg) end
+		return ""
+	end
+end
+if not debug.info then debug.info = function() end end
 do
 	-- Services
 	local Players = game:GetService("Players")

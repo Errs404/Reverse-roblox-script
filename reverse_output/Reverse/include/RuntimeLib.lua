@@ -1,6 +1,16 @@
 local nA = require(script.Parent.Promise)
 local ez = game:GetService("RunService")
 local oA = game:GetService("ReplicatedFirst")
+
+-- Polyfill debug.traceback for executors that block it (Xeno, etc.)
+if not debug then debug = {} end
+if not debug.traceback then
+	debug.traceback = function(msg, level)
+		if msg ~= nil then return tostring(msg) end
+		return ""
+	end
+end
+
 local a = {}
 a.Promise = nA
 local function oB(fd)
