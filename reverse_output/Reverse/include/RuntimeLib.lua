@@ -2,7 +2,9 @@ local nA = require(script.Parent.Promise)
 local ez = game:GetService("RunService")
 local oA = game:GetService("ReplicatedFirst")
 
--- Polyfill debug.traceback for executors that block it (Xeno, etc.)
+-- Polyfill critical globals that executors like Xeno block
+if not warn then warn = function() end end
+if not print then print = function() end end
 if not debug then debug = {} end
 if not debug.traceback then
 	debug.traceback = function(msg, level)

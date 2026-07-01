@@ -1,6 +1,6 @@
-
--- Prevent "attempt to call nil value" on debug.traceback/setfenv
--- Xeno and some executors block these functions
+-- Polyfill critical globals that executors like Xeno block
+if not warn then warn = function() end end
+if not print then print = function() end end
 if not debug then debug = {} end
 if not debug.traceback then
 	debug.traceback = function(msg, level)
@@ -9,7 +9,6 @@ if not debug.traceback then
 	end
 end
 if not debug.info then debug.info = function() end end
--- Some executors block setfenv — fallback: just return the function as-is
 if not setfenv then setfenv = function(fn, _) return fn end end
 if not getfenv then getfenv = function() return _G end end
 
